@@ -10,22 +10,12 @@
 
   <link rel="stylesheet" href="bootstrap.css">
   <link rel="stylesheet" href="custom.css">
-
-	<style>
-		body {
-		  background-image: url("lake2.jpg");
-      padding-top: 25px;
-      /*background-size: cover;*/
-      background-size: 100vw 100vh;
-      overflow-x: hidden;
-		}
-	</style>
 	
 	<script src="setBDate.js" ></script>
 
 </head>
 
-<body>
+<body class="pattern">
   <div class="container-fluid">
     <div class="row" style="min-height: 300px;">
       <div class="col-lg-6">
@@ -61,11 +51,36 @@
         </form>
       </div>
 
-      <div id="age" style="display: none;">
+      <div id="age" class="counter-container" style="display: none;">
+
+
+        <h1 id="title">Tick tack</h1>
+        <div class="quote" id="quote"></div>
+
         <div class="age" id="ageHolder"></div>
 
-        <div class="quote">Hey Tadas,</div>
-        <div class="quote" id="quote"></div>
+        <div class="row counter">
+          <div id="years" class="col-lg-1 col-lg-offset-2"></div>
+          <div id="days" class="col-lg-2 col-lg-offset-1"></div>
+          <div id="seconds" class="col-lg-2 col-lg-offset-1"></div>
+        </div>
+
+        <div class="row counter-names">
+          <div class="col-lg-1 col-lg-offset-2">
+            YEARS
+          </div>
+
+          <div class="col-lg-2 col-lg-offset-1">
+            DAYS
+          </div>
+
+          <div class="col-lg-2 col-lg-offset-1">
+            SECONDS
+          </div>
+
+        </div>
+
+
       </div>
 
 

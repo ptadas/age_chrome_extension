@@ -49,12 +49,34 @@ function showAge(birthDate) {
   // show random quote
   var quoteIx =
 (Math.random() * 100).toFixed(0) % (quotes.length - 1);
-  document.getElementById("quote").innerHTML = quotes[quoteIx];
+  // document.getElementById("quote").innerHTML = quotes[quoteIx];
 
   var ageHolder = document.getElementById("ageHolder");
+  var years = document.getElementById("years");
+  var days = document.getElementById("days");
+  var seconds = document.getElementById("seconds");
+
   // set timer to update age
   setInterval(function() {
-      ageHolder.innerHTML = getAge(birthDate)
+      var age = getAge(birthDate);
+
+      // milliseconds in a year - 3.154e+10
+      var year = Math.floor(age / 3.154e+10);
+
+      var currYearMilli = age - year * 3.154e+10;
+      var day =  currYearMilli / (1000 * 3600 * 24);
+
+      var dt = new Date();
+
+      var totalSeconds = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
+      var milliseconds = Math.round(dt.getMilliseconds() / 100);
+      milliseconds = milliseconds === 10 ? 0 : milliseconds;
+
+      var second = totalSeconds + '.' + milliseconds;
+
+      years.innerHTML = year;
+      days.innerHTML = Math.floor(day);
+      seconds.innerHTML = second;
     },
     100
   );
@@ -68,8 +90,7 @@ function getAge(birthDate){
   var bday = new Date(birthDate);
   var age = new Date() - bday;
 
-  // milliseconds in a year - 3.154e+10
-  return (age / 3.154e+10).toFixed(9)
+  return age;
 }
 
 
@@ -89,4 +110,6 @@ function setBirthDate(obj) {
 }
 
 // https://stackoverflow.com/questions/28046084/chrome-app-extension-to-remove-a-page-element
+
+// https://developer.chrome.com/webstore/publish
 
