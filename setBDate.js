@@ -4,17 +4,30 @@ document.addEventListener(
     document.getElementById("setBDate").addEventListener("click", setBirthDate);
     document.getElementById("toggle").addEventListener("click", changeAgeDisplay);
     document.getElementById("clear").addEventListener("click", clearBirthDate);
+    document.getElementById("background").addEventListener("click", randBackground);
 });
 
+
+function randBackground() {
+  var num = Math.round(Math.random() * 100 % 5);
+  document.body.className = 'pattern' + num;
+
+  chrome.storage.local.set({
+    existenceAppBackgroundClass: 'pattern' + num
+  })
+
+}
 
 /*
 * Check if birthDate is set
 * if it is, show age
 * */
 function showAgeWrapper() {
-  chrome.storage.local.get(['existenceApp', 'existenceAppTypeId'], function (obj) {
+  chrome.storage.local.get(['existenceApp', 'existenceAppTypeId', 'existenceAppBackgroundClass'], function (obj) {
     if(typeof obj.existenceApp !== 'undefined'){
       var person = obj.existenceApp;
+
+      document.body.className = obj.existenceAppBackgroundClass;
 
       if(obj.existenceAppTypeId === 1){
         showAge(person.birthDate, person.name)
@@ -42,6 +55,21 @@ var quotes = [
 
   'Hard choices - easy life. Easy choices - hard life',
 
+  // 'Life is about basics' (in terms of applications of seemingly complex subjects ie Math, Physics
+  'It\'s all about first principles and understanding the basics 100%'
+  /*
+  “It is not the strongest of the species that survives,
+nor the most intelligent,
+but the one most responsive to change.”
+— Charles Darwin*/
+
+//   “What the pupil must learn, if he learns anything at all,
+// is that the world will do most of the work for you,
+// provided you cooperate with it by identifying
+// how it really works and aligning with those realities.
+// If we do not let the world teach us, it teaches us a lesson.”
+// — Joseph Tussman
+
 ];
 
 
@@ -67,7 +95,7 @@ function showAge(birthDate, name) {
   var seconds = document.getElementById("seconds");
 
   document.getElementById("title").innerHTML = 'Tick Tack ' + name;
-  console.log('age', birthDate)
+
   // set timer to update age
   var intervlaId = setInterval(function() {
     var age = getAge(birthDate);
@@ -188,7 +216,8 @@ function setBirthDate(obj) {
       birthDate: bDateStr,
       name : name
     },
-    existenceAppTypeId: 1
+    existenceAppTypeId: 1,
+    existenceAppBackgroundClass: 'pattern1'
   }, function () {
       showAge(bDateStr, name)
   });
