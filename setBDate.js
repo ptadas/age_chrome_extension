@@ -2,6 +2,7 @@ document.addEventListener(
   'DOMContentLoaded',
   function() {
     document.getElementById("setBDate").addEventListener("click", setBirthDate);
+    document.getElementById("clear").addEventListener("click", clearBirthDate);
 });
 
 
@@ -9,9 +10,9 @@ document.addEventListener(
 * Check if birthDate is set
 * if it is, show age
 * */
-chrome.storage.local.get('birthDate', function (val) {
-  if(typeof val.birthDate !== 'undefined'){
-    showAge(val.birthDate)
+chrome.storage.local.get('existenceApp', function (val) {
+  if(typeof val.existenceApp !== 'undefined'){
+    showAge(val.existenceApp.birthDate, val.existenceApp.name)
 
   }
 
@@ -39,12 +40,13 @@ var quotes = [
 * - select random quote
 * - set interval for age update
 * */
-function showAge(birthDate) {
+function showAge(birthDate, name) {
   // hide form if we have the birthday set
   document.getElementById("form").style.display = 'none';
 
   // show age div
   document.getElementById("age").style.display = 'block';
+  document.getElementById("clearDiv").style.display = 'block';
 
   // show random quote
   var quoteIx =
@@ -55,6 +57,8 @@ function showAge(birthDate) {
   var years = document.getElementById("years");
   var days = document.getElementById("days");
   var seconds = document.getElementById("seconds");
+
+  document.getElementById("title").innerHTML = 'Tick Tack ' + name;
 
   // set timer to update age
   setInterval(function() {
@@ -94,15 +98,40 @@ function getAge(birthDate){
 }
 
 
+function clearBirthDate(obj){
+  chrome.storage.local.remove('existenceApp');
+
+  // hide form if we have the birthday set
+  document.getElementById("form").style.display = 'block';
+
+  // show age div
+  document.getElementById("age").style.display = 'none';
+  document.getElementById("clearDiv").style.display = 'none';
+}
+
+
 // The handler also must go in a .js file
 function setBirthDate(obj) {
-  var bDay = document.getElementById("BDate").value;
-  var bDate = new Date(bDay);
+  var name = document.getElementById("name").value;
+
+  var year = document.getElementById("year").value;
+  var month = document.getElementById("month").value;
+  var day = document.getElementById("day").value;
+
+  day = day.length === 1 ? '0' + day : day;
+  month = month.length === 1 ? '0' + month : month;
+
+  var date = year + '-' + month + '-' + day;
+
+  var bDate = new Date(date);
   var bDateStr = bDate.toISOString().substring(0, 10);
 
   // to remove - chrome.storage.local.remove('birthDate')
   chrome.storage.local.set({
-    'birthDate': bDateStr
+    'existenceApp': {
+      birthDate: bDateStr,
+      name : name
+    }
   }, function () {
       showAge(bDateStr)
   });

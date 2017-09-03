@@ -41,19 +41,39 @@
   <div class="row">
     <div class="col-lg-12 text-center">
 
-      <div id="form">
-        HELLO TADAS, enter your date of birth
+      <div id="form" class="counter-container">
+        <h1>HELLO, please enter the following details</h1>
 
-        <form action="">
-          <input id="BDate" type="date" name="b-date">
+        <div  class="col-lg-4 col-lg-offset-4">
+          <form>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input class="form-control" id="name" maxlength="20" placeholder="John">
+            </div>
 
-          <input id="setBDate" type="button" value="Set">
-        </form>
+            <div class="form-group">
+              <label for="year">Birth year</label>
+              <input type="number" class="form-control" id="year" maxlength="4" placeholder="1990">
+            </div>
+
+            <div class="form-group">
+              <label for="month">Birth month</label>
+              <input type="number" class="form-control" id="month" maxlength="2" placeholder="8">
+            </div>
+
+            <div class="form-group">
+              <label for="day">Birth day</label>
+              <input type="number" class="form-control" id="day" maxlength="2" placeholder="9">
+            </div>
+
+            <div class="form-group">
+              <input type="submit" id="setBDate" class="btn btn-lg btn-primary" value="Submit"/>
+            </div>
+          </form>
+        </div>
       </div>
 
       <div id="age" class="counter-container" style="display: none;">
-
-
         <h1 id="title">Tick tack</h1>
         <div class="quote" id="quote"></div>
 
@@ -77,15 +97,13 @@
           <div class="col-lg-2 col-lg-offset-1">
             SECONDS
           </div>
-
         </div>
-
-
       </div>
-
-
-
     </div>
+  </div>
+
+  <div id="clearDiv" style="display: none" class="button-clear">
+    <button id="clear" class="btn btn-default">Reset</button>
   </div>
 
   
