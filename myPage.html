@@ -41,7 +41,7 @@
   <div class="row">
     <div class="col-lg-12 text-center">
 
-      <div id="form" class="counter-container">
+      <div id="form" class="counter-container" style="display: none">
         <h1>HELLO, please enter the following details</h1>
 
         <div  class="col-lg-4 col-lg-offset-4">
@@ -75,34 +75,37 @@
 
       <div id="age" class="counter-container" style="display: none;">
         <h1 id="title">Tick tack</h1>
-        <div class="quote" id="quote"></div>
 
-        <div class="age" id="ageHolder"></div>
+        <div id="age1">
+          <div class="row counter">
+            <div id="years" class="col-lg-1 col-lg-offset-2"></div>
+            <div id="days" class="col-lg-2 col-lg-offset-1"></div>
+            <div id="seconds" class="col-lg-2 col-lg-offset-1"></div>
+          </div>
 
-        <div class="row counter">
-          <div id="years" class="col-lg-1 col-lg-offset-2"></div>
-          <div id="days" class="col-lg-2 col-lg-offset-1"></div>
-          <div id="seconds" class="col-lg-2 col-lg-offset-1"></div>
+          <div class="row counter-names">
+            <div class="col-lg-1 col-lg-offset-2">
+              YEARS
+            </div>
+
+            <div class="col-lg-2 col-lg-offset-1">
+              DAYS
+            </div>
+
+            <div class="col-lg-2 col-lg-offset-1">
+              SECONDS
+            </div>
+          </div>
         </div>
 
-        <div class="row counter-names">
-          <div class="col-lg-1 col-lg-offset-2">
-            YEARS
-          </div>
-
-          <div class="col-lg-2 col-lg-offset-1">
-            DAYS
-          </div>
-
-          <div class="col-lg-2 col-lg-offset-1">
-            SECONDS
-          </div>
-        </div>
+        <div id="age2" class="counter" style="text-align: center"></div>
       </div>
+
     </div>
   </div>
 
-  <div id="clearDiv" style="display: none" class="button-clear">
+  <div id="options" style="display: none" class="button-clear">
+    <button id="toggle" class="btn btn-warning">Toggle</button>
     <button id="clear" class="btn btn-default">Reset</button>
   </div>
 

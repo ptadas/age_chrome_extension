@@ -2,6 +2,7 @@ document.addEventListener(
   'DOMContentLoaded',
   function() {
     document.getElementById("setBDate").addEventListener("click", setBirthDate);
+    document.getElementById("toggle").addEventListener("click", changeAgeDisplay);
     document.getElementById("clear").addEventListener("click", clearBirthDate);
 });
 
@@ -10,14 +11,25 @@ document.addEventListener(
 * Check if birthDate is set
 * if it is, show age
 * */
-chrome.storage.local.get('existenceApp', function (val) {
-  if(typeof val.existenceApp !== 'undefined'){
-    showAge(val.existenceApp.birthDate, val.existenceApp.name)
+function showAgeWrapper() {
+  chrome.storage.local.get(['existenceApp', 'existenceAppTypeId'], function (obj) {
+    if(typeof obj.existenceApp !== 'undefined'){
+      var person = obj.existenceApp;
 
-  }
+      if(obj.existenceAppTypeId === 1){
+        showAge(person.birthDate, person.name)
+      } else {
+        showAge2(person.birthDate, person.name)
+      }
+    } else {
+      // show form
+      document.getElementById("form").style.display = 'block';
+    }
+  });
+}
 
-});
-
+// check if we need to show age
+showAgeWrapper();
 
 var quotes = [
   'Its not the smartest people who achieve success. Its the people who procrastinate less, make fewer excuses as they take actions everyday towards the goals they want to achieve.',
@@ -43,47 +55,94 @@ var quotes = [
 function showAge(birthDate, name) {
   // hide form if we have the birthday set
   document.getElementById("form").style.display = 'none';
+  document.getElementById("age2").style.display = 'none';
 
   // show age div
   document.getElementById("age").style.display = 'block';
-  document.getElementById("clearDiv").style.display = 'block';
+  document.getElementById("age1").style.display = 'block';
+  document.getElementById("options").style.display = 'block';
 
-  // show random quote
-  var quoteIx =
-(Math.random() * 100).toFixed(0) % (quotes.length - 1);
-  // document.getElementById("quote").innerHTML = quotes[quoteIx];
-
-  var ageHolder = document.getElementById("ageHolder");
   var years = document.getElementById("years");
   var days = document.getElementById("days");
   var seconds = document.getElementById("seconds");
 
   document.getElementById("title").innerHTML = 'Tick Tack ' + name;
-
+  console.log('age', birthDate)
   // set timer to update age
-  setInterval(function() {
-      var age = getAge(birthDate);
+  var intervlaId = setInterval(function() {
+    var age = getAge(birthDate);
+    // milliseconds in a year - 3.154e+10
+    var year = Math.floor(age / 3.154e+10);
 
-      // milliseconds in a year - 3.154e+10
-      var year = Math.floor(age / 3.154e+10);
+    var currYearMilli = age - year * 3.154e+10;
+    var day =  currYearMilli / (1000 * 3600 * 24);
 
-      var currYearMilli = age - year * 3.154e+10;
-      var day =  currYearMilli / (1000 * 3600 * 24);
+    var dt = new Date();
 
-      var dt = new Date();
+    var totalSeconds = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
+    var milliseconds = Math.round(dt.getMilliseconds() / 100);
+    milliseconds = milliseconds === 10 ? 0 : milliseconds;
 
-      var totalSeconds = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
-      var milliseconds = Math.round(dt.getMilliseconds() / 100);
-      milliseconds = milliseconds === 10 ? 0 : milliseconds;
+    var second = totalSeconds + '.' + milliseconds;
 
-      var second = totalSeconds + '.' + milliseconds;
-
-      years.innerHTML = year;
-      days.innerHTML = Math.floor(day);
-      seconds.innerHTML = second;
+    years.innerHTML = year;
+    days.innerHTML = Math.floor(day);
+    seconds.innerHTML = second;
     },
     100
   );
+
+  chrome.storage.local.set({
+    existenceAppIntervalId: intervlaId
+  })
+}
+
+
+function showAge2(birthDate, name) {
+  // hide form if we have the birthday set
+  document.getElementById("form").style.display = 'none';
+  document.getElementById("age1").style.display = 'none';
+
+  // show age div
+  document.getElementById("age").style.display = 'block';
+  document.getElementById("age2").style.display = 'block';
+  document.getElementById("options").style.display = 'block';
+
+
+  var ageHolder = document.getElementById("age2");
+
+  document.getElementById("title").innerHTML = 'Tick Tack ' + name;
+
+  // set timer to update age
+  var intervlaId = setInterval(function() {
+    var age = getAge(birthDate);
+
+    ageHolder.innerHTML = (age / 3.154e+10).toFixed(9);
+    },
+    100
+  );
+
+  chrome.storage.local.set({
+    existenceAppIntervalId: intervlaId
+  })
+}
+
+function changeAgeDisplay() {
+  // get and stop the old interval
+  chrome.storage.local.get('existenceAppIntervalId', function (val) {
+    clearInterval(val.existenceAppIntervalId);
+  });
+
+  chrome.storage.local.get('existenceAppTypeId', function (type) {
+    var typeId = type.existenceAppTypeId === 1 ? 2 : 1;
+
+    chrome.storage.local.set({
+      existenceAppTypeId: typeId
+    }, function () {
+      showAgeWrapper()
+    });
+  });
+
 }
 
 
@@ -91,10 +150,7 @@ function showAge(birthDate, name) {
 * Get age in milliseconds
 * */
 function getAge(birthDate){
-  var bday = new Date(birthDate);
-  var age = new Date() - bday;
-
-  return age;
+  return new Date() - new Date(birthDate);
 }
 
 
@@ -106,7 +162,7 @@ function clearBirthDate(obj){
 
   // show age div
   document.getElementById("age").style.display = 'none';
-  document.getElementById("clearDiv").style.display = 'none';
+  document.getElementById("options").style.display = 'none';
 }
 
 
@@ -128,12 +184,13 @@ function setBirthDate(obj) {
 
   // to remove - chrome.storage.local.remove('birthDate')
   chrome.storage.local.set({
-    'existenceApp': {
+    existenceApp: {
       birthDate: bDateStr,
       name : name
-    }
+    },
+    existenceAppTypeId: 1
   }, function () {
-      showAge(bDateStr)
+      showAge(bDateStr, name)
   });
 
 }
