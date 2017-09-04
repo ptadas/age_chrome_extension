@@ -4,11 +4,6 @@
   "name": "Existence App",
   "description": "This extension shows your age in 100 millisend time",
   "version": "0.1",
-
-  "browser_action": {
-    "default_icon": "",
-    "default_popup": ""
-  },
   "permissions": [
     "activeTab",
     "storage"
